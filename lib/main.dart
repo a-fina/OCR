@@ -31,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String text = "";
   Future pickImage() async {
     var tempStore = await ImagePicker.pickImage(source: ImageSource.camera);
+    print('DEBUG ImagePicker.pickImage ');
     setState(() {
       pickedImage = tempStore;
       isImageLoaded = true;
@@ -40,9 +41,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Future readText() async {
 
     textList = [];
-    FirebaseVisionImage ourImage = FirebaseVisionImage.fromFile(pickedImage);print('2');
+    FirebaseVisionImage ourImage = FirebaseVisionImage.fromFile(pickedImage);
+    print('DEBUG Firevision Image 10');
     TextRecognizer recognizeText = FirebaseVision.instance.textRecognizer();
     VisionText readText = await recognizeText.processImage(ourImage);
+    print('DEBUG Firevision readText Image 20');
     for (TextBlock block in readText.blocks) {
       for (TextLine line in block.lines) {
         for (TextElement word in line.elements) {
