@@ -1,1 +1,7 @@
-{}
+{
+  "projects": {
+    "stagingù": "petit-forestier-at-mobile-app",
+    "staging": "petit-forestier-at-mobile-app",
+    "default": "petit-forestier-at-mobile-app"
+  }
+}
