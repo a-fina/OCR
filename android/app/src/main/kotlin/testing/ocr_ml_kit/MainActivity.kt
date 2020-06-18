@@ -1,4 +1,4 @@
-package testing.ocr_ml_kit
+package testing.petit_forestier
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

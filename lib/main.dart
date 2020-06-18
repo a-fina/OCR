@@ -15,9 +15,8 @@ final TextEditingController _lastNameTextController = TextEditingController();
 final TextEditingController _usernameTextController = TextEditingController();
 final TextEditingController _truckIdTextController = TextEditingController()..text = "TRUCK-ID-0001";
 final TextEditingController _parkingIdTextController = TextEditingController()..text = "PARKING-ID-001";
-String _truckID = 'TEST-001';
-String _parkingID = 'TEST-002';
-
+String code = '<ol> <li>Truck ID:' + _truckIdTextController.value.text +
+    ' </li> <li>Parking ID:' + _parkingIdTextController.value.text + ' </li> </ol>';
 class SignUpApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -84,11 +83,7 @@ String userName = '<h1>Verify Data</h1>' +
     _usernameTextController.value.text +
     '</strong></h3>' +
     'Parking details</p>';
-String code = '<ol> <li>Truck ID:' +
-    _truckIdTextController.value.text +
-    ' </li> <li>Parking ID:' +
-    _parkingIdTextController.value.text +
-    ' </li> </ol>';
+
 String iframe =
     '<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdM4R3KDmlsSzTAW5YT3heQ6GlmbCoeWU_epsfVm_LJX5AWoA/viewform?usp=pp_url&entry.1252875767=' 
     + _parkingIdTextController.value.text+
@@ -244,7 +239,9 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
     print(csv);
     setState(() {
       text = text + csv;
-      _truckID = text;
+      _truckIdTextController.text = text;
+      code = '<ol> <li>Truck ID:' + _truckIdTextController.value.text +
+        ' </li> <li>Parking ID:' + _parkingIdTextController.value.text + ' </li> </ol>';
     });
   }
 
@@ -339,7 +336,9 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
     print(csv);
     setState(() {
       text = text + csv;
-      _parkingID = text;
+      _parkingIdTextController..text = text;
+      code = '<ol> <li>Truck ID:' + _truckIdTextController.value.text +
+        ' </li> <li>Parking ID:' + _parkingIdTextController.value.text + ' </li> </ol>';
     });
   }
 

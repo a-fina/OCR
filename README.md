@@ -1,4 +1,4 @@
-# ocr_ml_kit
+# petit_forestier
 
 A new Flutter application.
 
@@ -18,8 +18,10 @@ samples, guidance on mobile development, and a full API reference.
 # Revevol
 
 * run locally
+    flutter doctor
     flutter pub get
-    flutter run -d chrome
+    flutter run -d chrome ( Web: camera not working need Android Emulator)
+    flutter run (Android)
 
 
 * Firebase deploy
@@ -27,6 +29,12 @@ samples, guidance on mobile development, and a full API reference.
     firebase init
     firebase projects:list
     firebase serve --only hosting
+
+    flutter build web
+
     firebase deploy
+
+* Build APK
+    flutter build apk --split-per-abi
 
 
