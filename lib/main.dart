@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 import 'package:csv/csv.dart';
@@ -10,6 +11,12 @@ import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 void main() => runApp(SignUpApp());
 
 final TextEditingController _firstNameTextController = TextEditingController();
+final TextEditingController _lastNameTextController = TextEditingController();
+final TextEditingController _usernameTextController = TextEditingController();
+final TextEditingController _truckIdTextController = TextEditingController()..text = "TRUCK-ID-0001";
+final TextEditingController _parkingIdTextController = TextEditingController()..text = "PARKING-ID-001";
+String _truckID = 'TEST-001';
+String _parkingID = 'TEST-002';
 
 class SignUpApp extends StatelessWidget {
   @override
@@ -47,35 +54,53 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Petit Forestier Parking Mobile'),
+      ),
       body: Center(
-        child: Text('Welcome ' + _firstNameTextController.value.text +'!' , style: Theme.of(context).textTheme.headline2),
+        child: Column(
+          children: [
+            Text('Welcome ' + _usernameTextController.value.text,
+                style: Theme.of(context).textTheme.headline2),
+            Text('please take a photo of truck ID ad parking ID',
+                style: Theme.of(context).textTheme.headline6),
+            FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              onPressed: () {
+                Navigator.of(context).pushNamed('/fotopageone');
+              },
+              child: Text('Continue'),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-const kHtml = '''
-<h1>Heading</h1>
-<p>A paragraph with <strong>strong</strong> <em>emphasized</em> text.</p>
-<ol>
-  <li>List item number one</li>
-  <li>
-    Two
-    <ul>
-      <li>2.1 (nested)</li>
-      <li>2.2</li>
-    </ul>
-  </li>
-  <li>Three</li>
-</ol>
-<p>Google Form</p>
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSd6Dtfd4zdKWXrD1cMNJir7Nw5MKnbb_rXMu3D2cYyLx6k5lw/viewform?usp=pp_url&entry.1161099116=abc&entry.1502601717=def" width="560" height="315"></iframe>''';
+String userName = '<h1>Verify Data</h1>' +
+    '<p>User name<h3><strong>' +
+    _usernameTextController.value.text +
+    '</strong></h3>' +
+    'Parking details</p>';
+String code = '<ol> <li>Truck ID:' +
+    _truckIdTextController.value.text +
+    ' </li> <li>Parking ID:' +
+    _parkingIdTextController.value.text +
+    ' </li> </ol>';
+String iframe =
+    '<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdM4R3KDmlsSzTAW5YT3heQ6GlmbCoeWU_epsfVm_LJX5AWoA/viewform?usp=pp_url&entry.1252875767=' 
+    + _parkingIdTextController.value.text+
+    '&entry.1016685718=' + _truckIdTextController.value.text + '" width="560" height="715"></iframe>';
+
+String kHtml = userName + code + '<p>User Form</p>' + iframe;
 
 class IframeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('Hello Google Form'),
+          title: Text('Petit Forestier Parking Mobile'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -84,6 +109,21 @@ class IframeScreen extends StatelessWidget {
             webView: true,
           ),
         ),
+        drawer: Drawer(
+            child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+          ListTile(
+            title: Text('Enter new Truck'),
+            onTap: () {
+              Navigator.of(context).pushNamed('/');
+            },
+          ),
+          ListTile(
+            title: Text('Exit'),
+            onTap: () {
+              SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
+            },
+          ),
+        ])),
       );
 }
 
@@ -93,31 +133,17 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  final _lastNameTextController = TextEditingController();
-  final _usernameTextController = TextEditingController();
-
   double _formProgress = 0;
 
   void _showWelcomeScreen() {
     Navigator.of(context).pushNamed('/welcome');
   }
-  void _showIframeScreen() {
-    Navigator.of(context).pushNamed('/iframe');
-  }
-  void _showPhotoPageOne() {
-    Navigator.of(context).pushNamed('/fotopageone');
-  }
-  void _showPhotoPageTwo() {
-    Navigator.of(context).pushNamed('/fotopagetwo');
-  }
-
-
 
   void _updateFormProgress() {
     var progress = 0.0;
     var controllers = [
-      _firstNameTextController,
-      _lastNameTextController,
+      //  _firstNameTextController,
+      //  _lastNameTextController,
       _usernameTextController
     ];
 
@@ -140,51 +166,34 @@ class _SignUpFormState extends State<SignUpForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           LinearProgressIndicator(value: _formProgress),
-          Text('Sign Up', style: Theme.of(context).textTheme.headline4),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _firstNameTextController,
-              decoration: InputDecoration(hintText: 'First name'),
-            ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Image.asset('assets/images/petit-forestier.png'),
+              ),
+              Expanded(
+                child: Image.asset('assets/images/logo-lecapitaine.png'),
+              ),
+            ],
           ),
           Padding(
             padding: EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _lastNameTextController,
-              decoration: InputDecoration(hintText: 'Last name'),
-            ),
+            child: Text('Enter new Truck',
+                style: Theme.of(context).textTheme.headline4),
           ),
           Padding(
             padding: EdgeInsets.all(8.0),
             child: TextFormField(
               controller: _usernameTextController,
-              decoration: InputDecoration(hintText: 'Username'),
+              decoration: InputDecoration(hintText: 'Name'),
             ),
           ),
           FlatButton(
             color: Colors.blue,
             textColor: Colors.white,
-            onPressed: _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
-            child: Text('Sign up'),
-          ),
-          FlatButton(
-            color: Colors.blue,
-            textColor: Colors.white,
-            onPressed: _formProgress == 1 ? _showPhotoPageOne: null, // UPDATED
-            child: Text('Upload Photo One'),
-          ),
-          FlatButton(
-            color: Colors.blue,
-            textColor: Colors.white,
-            onPressed: _formProgress == 1 ? _showPhotoPageTwo: null, // UPDATED
-            child: Text('Upload Photo Two'),
-          ),
-          FlatButton(
-            color: Colors.blue,
-            textColor: Colors.white,
-            onPressed: _formProgress == 1 ? _showIframeScreen: null, // UPDATED
-            child: Text('Google User Form'),
+            onPressed:
+                _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
+            child: Text('Check-In'),
           ),
         ],
       ),
@@ -199,8 +208,8 @@ class MyPhotoPageOne extends StatefulWidget {
 
 class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
   File pickedImage;
-  List<List<String>> textList=[];
-  List<String> lineList=[];
+  List<List<String>> textList = [];
+  List<String> lineList = [];
 
   bool isImageLoaded = false;
   String text = "";
@@ -215,7 +224,6 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
   }
 
   Future readText() async {
-
     textList = [];
     FirebaseVisionImage ourImage = FirebaseVisionImage.fromFile(pickedImage);
     print('DEBUG Firevision Image one 10');
@@ -235,40 +243,56 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
     String csv = const ListToCsvConverter().convert(textList);
     print(csv);
     setState(() {
-      text=text+csv;
+      text = text + csv;
+      _truckID = text;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-      children: <Widget>[
-        SizedBox(height: 100.0),
-        isImageLoaded
-            ? Center(
-                child: Container(
-                    height: 200.0,
-                    width: 200.0,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: FileImage(pickedImage), fit: BoxFit.cover))),
-              )
-            : Container(),
-        SizedBox(height: 10.0),
-        RaisedButton(
-          child: Text('Pick an image One'),
-          onPressed: pickImage,
+        appBar: AppBar(
+          title: Text('Petit Forestier Parking Mobile'),
         ),
-        SizedBox(height: 10.0),
-        RaisedButton(
-          child: Text('Read Text One'),
-          onPressed: readText,
-        ),
-        Text(text)
-      ],
-    ));
+        body: Column(
+          children: <Widget>[
+            SizedBox(height: 100.0),
+            isImageLoaded
+                ? Center(
+                    child: Container(
+                        height: 200.0,
+                        width: 200.0,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: FileImage(pickedImage),
+                                fit: BoxFit.cover))),
+                  )
+                : Container(),
+            SizedBox(height: 10.0),
+            RaisedButton(
+              child: Text('Open Camera'),
+              onPressed: pickImage,
+            ),
+            SizedBox(height: 10.0),
+            RaisedButton(
+              child: Text('Read Truck ID'),
+              onPressed: readText,
+            ),
+            Text(text),
+            TextFormField(
+              controller: _truckIdTextController,
+              decoration: InputDecoration(hintText: 'TRUCK-ID-0001'),
+            ),
+            FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              onPressed: () {
+                Navigator.of(context).pushNamed('/fotopagetwo');
+              },
+              child: Text('Continue'),
+            ),
+          ],
+        ));
   }
 }
 
@@ -279,8 +303,8 @@ class MyPhotoPageTwo extends StatefulWidget {
 
 class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
   File pickedImage;
-  List<List<String>> textList=[];
-  List<String> lineList=[];
+  List<List<String>> textList = [];
+  List<String> lineList = [];
 
   bool isImageLoaded = false;
   String text = "";
@@ -295,7 +319,6 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
   }
 
   Future readText() async {
-
     textList = [];
     FirebaseVisionImage ourImage = FirebaseVisionImage.fromFile(pickedImage);
     print('DEBUG Firevision Image Two 10');
@@ -315,39 +338,55 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
     String csv = const ListToCsvConverter().convert(textList);
     print(csv);
     setState(() {
-      text=text+csv;
+      text = text + csv;
+      _parkingID = text;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-      children: <Widget>[
-        SizedBox(height: 100.0),
-        isImageLoaded
-            ? Center(
-                child: Container(
-                    height: 200.0,
-                    width: 200.0,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: FileImage(pickedImage), fit: BoxFit.cover))),
-              )
-            : Container(),
-        SizedBox(height: 10.0),
-        RaisedButton(
-          child: Text('Pick an image Two'),
-          onPressed: pickImage,
+        appBar: AppBar(
+          title: Text('Petit Forestier Parking Mobile'),
         ),
-        SizedBox(height: 10.0),
-        RaisedButton(
-          child: Text('Read Text Two'),
-          onPressed: readText,
-        ),
-        Text(text)
-      ],
-    ));
+        body: Column(
+          children: <Widget>[
+            SizedBox(height: 100.0),
+            isImageLoaded
+                ? Center(
+                    child: Container(
+                        height: 200.0,
+                        width: 200.0,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: FileImage(pickedImage),
+                                fit: BoxFit.cover))),
+                  )
+                : Container(),
+            SizedBox(height: 10.0),
+            RaisedButton(
+              child: Text('Open Camera'),
+              onPressed: pickImage,
+            ),
+            SizedBox(height: 10.0),
+            RaisedButton(
+              child: Text('Read Parking ID'),
+              onPressed: readText,
+            ),
+            Text(text),
+            TextFormField(
+              controller: _parkingIdTextController,
+              decoration: InputDecoration(hintText: 'PARKING-ID-0001'),
+            ),
+            FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              onPressed: () {
+                Navigator.of(context).pushNamed('/iframe');
+              },
+              child: Text('Continue'),
+            ),
+          ],
+        ));
   }
 }
