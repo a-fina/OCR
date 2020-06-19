@@ -60,7 +60,7 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Petit Forestier Parking Mobile'),
+        title: Text('Localisation des camions'),
       ),
       body: Center(
         child: Column(
@@ -75,7 +75,7 @@ class WelcomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pushNamed('/fotopageone');
               },
-              child: Text('Continue',
+              child: Text('Suivant',
                     style: TextStyle(fontSize: 20),
               ),
             ),
@@ -97,15 +97,15 @@ String iframe =
         _parkingIdTextController.value.text +
         '&entry.1016685718=' +
         _truckIdTextController.value.text +
-        '" width="560" height="715"></iframe>';
+        '" width="560" height="915"></iframe>';
 
-String kHtml = userName + code + '<p>User Form</p>' + iframe;
+String kHtml = iframe;
 
 class IframeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('Petit Forestier Parking Mobile'),
+          title: Text('Localisation des camions'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -117,7 +117,7 @@ class IframeScreen extends StatelessWidget {
         drawer: Drawer(
             child: ListView(padding: EdgeInsets.zero, children: <Widget>[
           ListTile(
-            title: Text('Enter new Truck'),
+            title: Text('Nouveau camion'),
             onTap: () {
               Navigator.of(context).pushNamed('/');
             },
@@ -167,7 +167,7 @@ class _SignUpFormState extends State<SignUpForm> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Petit Forestier Parking Mobile'),
+          title: Text('Localisation des camions'),
         ),
         body: Center(
           child: Form(
@@ -198,25 +198,21 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                 ],
               ),
-              Padding(
-                padding: EdgeInsets.all(118.0),
-                child: TextFormField(
-                  controller: _usernameTextController,
-                  decoration: InputDecoration(hintText: 'Name (optional)'),
-                ),
-              ),
               Container(
-                child: RaisedButton(
-                  color: Colors.blue,
-                  textColor: Colors.white,
-                  onPressed: _showWelcomeScreen, // UPDATED
-                  child: Text('Enter new truck',
-                    style: TextStyle(fontSize: 20),
+                    child: RaisedButton(
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/fotopageone');
+                      },
+                      child: Text('Nouveau camion',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    margin: const EdgeInsets.only(top: 150),
+                    height: 70,
+                    width: 300,
                   ),
-                ),
-                height: 70,
-                width: 270,
-              )
             ],
           ),
         )));
@@ -239,15 +235,18 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
   Future pickImage() async {
     var tempStore = await ImagePicker.pickImage(source: ImageSource.camera);
     print('DEBUG ImagePicker.pickImage One');
+
+    readText(tempStore);
+
     setState(() {
       pickedImage = tempStore;
       isImageLoaded = true;
     });
   }
 
-  Future readText() async {
+  Future readText(File tempStore) async {
     textList = [];
-    FirebaseVisionImage ourImage = FirebaseVisionImage.fromFile(pickedImage);
+    FirebaseVisionImage ourImage = FirebaseVisionImage.fromFile(tempStore);
     print('DEBUG Firevision Image one 10');
     TextRecognizer recognizeText = FirebaseVision.instance.textRecognizer();
     VisionText readText = await recognizeText.processImage(ourImage);
@@ -266,6 +265,10 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
     print(csv);
     setState(() {
       text = text + csv;
+      text.replaceAll(",-,", "-");
+      text.replaceAll(",-", "-");
+      text.replaceAll("-,", "-");
+
       _truckIdTextController.text = text;
       code = '<ol> <li>Truck ID:' +
           _truckIdTextController.value.text +
@@ -279,10 +282,11 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Petit Forestier Parking Mobile'),
+          title: Text('Localisation des camions'),
         ),
         body: Column(
           children: <Widget>[
+            Text("Scanner votre camion",style: TextStyle(fontSize: 20)),
             SizedBox(height: 100.0),
             isImageLoaded
                 ? Center(
@@ -297,14 +301,16 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
                 : Container(),
             SizedBox(height: 10.0),
             RaisedButton(
-              child: Text('Open Camera',style: TextStyle(fontSize: 20)),
-              onPressed: pickImage,
+              child: Text('Prendre une photo',style: TextStyle(fontSize: 20)),
+              onPressed: (){
+                pickImage();
+              },
             ),
             SizedBox(height: 10.0),
-            RaisedButton(
+            /*RaisedButton(
               child: Text('Read Truck ID',style: TextStyle(fontSize: 20)),
               onPressed: readText,
-            ),
+            ),*/
             //Text(text),
             TextFormField(
               controller: _truckIdTextController,
@@ -316,7 +322,7 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
               onPressed: () {
                 Navigator.of(context).pushNamed('/fotopagetwo');
               },
-              child: Text('Continue',
+              child: Text('Suivant',
                     style: TextStyle(fontSize: 20),
               ),
             ),
@@ -341,15 +347,18 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
   Future pickImage() async {
     var tempStore = await ImagePicker.pickImage(source: ImageSource.camera);
     print('DEBUG ImagePicker.pickImage Two ');
+
+    readText(tempStore);
+
     setState(() {
       pickedImage = tempStore;
       isImageLoaded = true;
     });
   }
 
-  Future readText() async {
+  Future readText(File tempStore) async {
     textList = [];
-    FirebaseVisionImage ourImage = FirebaseVisionImage.fromFile(pickedImage);
+    FirebaseVisionImage ourImage = FirebaseVisionImage.fromFile(tempStore);
     print('DEBUG Firevision Image Two 10');
     TextRecognizer recognizeText = FirebaseVision.instance.textRecognizer();
     VisionText readText = await recognizeText.processImage(ourImage);
@@ -368,6 +377,10 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
     print(csv);
     setState(() {
       text = text + csv;
+      text.replaceAll(",-,", "-");
+      text.replaceAll(",-", "-");
+      text.replaceAll("-,", "-");
+
       _parkingIdTextController..text = text;
       code = '<ol> <li>Truck ID:' +
           _truckIdTextController.value.text +
@@ -381,10 +394,11 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Petit Forestier Parking Mobile'),
+          title: Text('Localisation des camions'),
         ),
         body: Column(
           children: <Widget>[
+            Text("Scanner la place du parking",style: TextStyle(fontSize: 20)),
             SizedBox(height: 100.0),
             isImageLoaded
                 ? Center(
@@ -399,14 +413,16 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
                 : Container(),
             SizedBox(height: 10.0),
             RaisedButton(
-              child: Text('Open Camera',style: TextStyle(fontSize: 20)),
-              onPressed: pickImage,
+              child: Text('Prendre une photo',style: TextStyle(fontSize: 20)),
+              onPressed:(){
+                pickImage();
+              }
             ),
             SizedBox(height: 10.0),
-            RaisedButton(
+            /*RaisedButton(
               child: Text('Read Parking ID',style: TextStyle(fontSize: 20)),
               onPressed: readText,
-            ),
+            ),*/
             //Text(text),
             TextFormField(
               controller: _parkingIdTextController,
@@ -418,7 +434,7 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
               onPressed: () {
                 Navigator.of(context).pushNamed('/iframe');
               },
-              child: Text('Continue',
+              child: Text('Suivant',
                     style: TextStyle(fontSize: 20),
               ),
             ),
