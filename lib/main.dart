@@ -13,10 +13,8 @@ void main() => runApp(SignUpApp());
 final TextEditingController _firstNameTextController = TextEditingController();
 final TextEditingController _lastNameTextController = TextEditingController();
 final TextEditingController _usernameTextController = TextEditingController();
-final TextEditingController _truckIdTextController = TextEditingController()
-  ..text = "TRUCK-ID-0001";
-final TextEditingController _parkingIdTextController = TextEditingController()
-  ..text = "PARKING-ID-001";
+final TextEditingController _truckIdTextController = TextEditingController();
+final TextEditingController _parkingIdTextController = TextEditingController();
 String code = '<ol> <li>Truck ID:' +
     _truckIdTextController.value.text +
     ' </li> <li>Parking ID:' +
@@ -125,7 +123,7 @@ class IframeScreen extends StatelessWidget {
               ),
           ),
           ListTile(
-            title: Text('Nouveau camion'),
+            title: Text('Garer mon camion'),
             onTap: () {
               Navigator.of(context).pushNamed('/');
             },
@@ -213,7 +211,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       onPressed: () {
                         Navigator.of(context).pushNamed('/fotopageone');
                       },
-                      child: Text('Nouveau camion',
+                      child: Text('Garer mon camion',
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
@@ -271,13 +269,12 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
 
     String csv = const ListToCsvConverter().convert(textList);
     print(csv);
+
     setState(() {
       text = text + csv;
-      text.replaceAll(",-,", "-");
-      text.replaceAll(",-", "-");
-      text.replaceAll("-,", "-");
 
-      _truckIdTextController.text = text;
+      _truckIdTextController.text = text.replaceAll(",-,"," - ").replaceAll(",-", " -").replaceAll("-,", "- ").replaceAll(",", " ");
+
       code = '<ol> <li>Truck ID:' +
           _truckIdTextController.value.text +
           ' </li> <li>Parking ID:' +
@@ -294,6 +291,7 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
         ),
         body: Column(
           children: <Widget>[
+            SizedBox(height: 50.0),
             Text("Scanner votre camion",style: TextStyle(fontSize: 20)),
             SizedBox(height: 100.0),
             isImageLoaded
@@ -308,6 +306,7 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
                   )
                 : Container(),
             SizedBox(height: 10.0),
+            //Text("ID: " + text),
             RaisedButton(
               child: Text('Prendre une photo',style: TextStyle(fontSize: 20)),
               onPressed: (){
@@ -319,10 +318,11 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
               child: Text('Read Truck ID',style: TextStyle(fontSize: 20)),
               onPressed: readText,
             ),*/
-            //Text(text),
-            TextFormField(
-              controller: _truckIdTextController,
-              decoration: InputDecoration(hintText: 'TRUCK-ID-0001'),
+            Container(
+              child: TextFormField(
+                controller: _truckIdTextController
+              ),
+              width: 200,
             ),
             FlatButton(
               color: Colors.blue,
@@ -385,11 +385,9 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
     print(csv);
     setState(() {
       text = text + csv;
-      text.replaceAll(",-,", "-");
-      text.replaceAll(",-", "-");
-      text.replaceAll("-,", "-");
 
-      _parkingIdTextController..text = text;
+      _parkingIdTextController..text = text.replaceAll(",-,"," - ").replaceAll(",-", " -").replaceAll("-,", "- ").replaceAll(",", " ");
+
       code = '<ol> <li>Truck ID:' +
           _truckIdTextController.value.text +
           ' </li> <li>Parking ID:' +
@@ -406,6 +404,7 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
         ),
         body: Column(
           children: <Widget>[
+            SizedBox(height: 50.0),
             Text("Scanner la place du parking",style: TextStyle(fontSize: 20)),
             SizedBox(height: 100.0),
             isImageLoaded
@@ -420,6 +419,7 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
                   )
                 : Container(),
             SizedBox(height: 10.0),
+            //Text("ID: " + text),
             RaisedButton(
               child: Text('Prendre une photo',style: TextStyle(fontSize: 20)),
               onPressed:(){
@@ -431,10 +431,11 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
               child: Text('Read Parking ID',style: TextStyle(fontSize: 20)),
               onPressed: readText,
             ),*/
-            //Text(text),
-            TextFormField(
-              controller: _parkingIdTextController,
-              decoration: InputDecoration(hintText: 'PARKING-ID-0001'),
+            Container(
+              child: TextFormField(
+                controller: _parkingIdTextController
+              ), 
+              width: 200,
             ),
             FlatButton(
               color: Colors.blue,
