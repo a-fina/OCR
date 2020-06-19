@@ -115,7 +115,15 @@ class IframeScreen extends StatelessWidget {
           ),
         ),
         drawer: Drawer(
-            child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+          child: ListView(
+          padding: EdgeInsets.zero, 
+          children: <Widget>[
+          DrawerHeader(
+              child: Text(''),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+          ),
           ListTile(
             title: Text('Nouveau camion'),
             onTap: () {
