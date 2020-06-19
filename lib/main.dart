@@ -13,10 +13,16 @@ void main() => runApp(SignUpApp());
 final TextEditingController _firstNameTextController = TextEditingController();
 final TextEditingController _lastNameTextController = TextEditingController();
 final TextEditingController _usernameTextController = TextEditingController();
-final TextEditingController _truckIdTextController = TextEditingController()..text = "TRUCK-ID-0001";
-final TextEditingController _parkingIdTextController = TextEditingController()..text = "PARKING-ID-001";
-String code = '<ol> <li>Truck ID:' + _truckIdTextController.value.text +
-    ' </li> <li>Parking ID:' + _parkingIdTextController.value.text + ' </li> </ol>';
+final TextEditingController _truckIdTextController = TextEditingController()
+  ..text = "TRUCK-ID-0001";
+final TextEditingController _parkingIdTextController = TextEditingController()
+  ..text = "PARKING-ID-001";
+String code = '<ol> <li>Truck ID:' +
+    _truckIdTextController.value.text +
+    ' </li> <li>Parking ID:' +
+    _parkingIdTextController.value.text +
+    ' </li> </ol>';
+
 class SignUpApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -69,7 +75,9 @@ class WelcomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pushNamed('/fotopageone');
               },
-              child: Text('Continue'),
+              child: Text('Continue',
+                    style: TextStyle(fontSize: 20),
+              ),
             ),
           ],
         ),
@@ -85,9 +93,11 @@ String userName = '<h1>Verify Data</h1>' +
     'Parking details</p>';
 
 String iframe =
-    '<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdM4R3KDmlsSzTAW5YT3heQ6GlmbCoeWU_epsfVm_LJX5AWoA/viewform?usp=pp_url&entry.1252875767=' 
-    + _parkingIdTextController.value.text+
-    '&entry.1016685718=' + _truckIdTextController.value.text + '" width="560" height="715"></iframe>';
+    '<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdM4R3KDmlsSzTAW5YT3heQ6GlmbCoeWU_epsfVm_LJX5AWoA/viewform?usp=pp_url&entry.1252875767=' +
+        _parkingIdTextController.value.text +
+        '&entry.1016685718=' +
+        _truckIdTextController.value.text +
+        '" width="560" height="715"></iframe>';
 
 String kHtml = userName + code + '<p>User Form</p>' + iframe;
 
@@ -155,44 +165,61 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      onChanged: _updateFormProgress, // NEW
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          LinearProgressIndicator(value: _formProgress),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Image.asset('assets/images/petit-forestier.png'),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Petit Forestier Parking Mobile'),
+        ),
+        body: Center(
+          child: Form(
+          onChanged: _updateFormProgress, // NEW
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              LinearProgressIndicator(value: _formProgress, 
+                backgroundColor: Colors.white,
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.white)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      child: Image.asset('assets/images/petit-forestier.png'),
+                      padding: const EdgeInsets.only(left: 5,right: 5),
+                      margin: const EdgeInsets.all(10),
+                    ) 
+                  ),
+                  Expanded(
+                    child: Container(
+                      child: Image.asset('assets/images/logo-lecapitaine.png'),
+                      margin: const EdgeInsets.all(20),
+                    ) 
+                  ),
+                ],
               ),
-              Expanded(
-                child: Image.asset('assets/images/logo-lecapitaine.png'),
+              Padding(
+                padding: EdgeInsets.all(118.0),
+                child: TextFormField(
+                  controller: _usernameTextController,
+                  decoration: InputDecoration(hintText: 'Name (optional)'),
+                ),
               ),
+              Container(
+                child: RaisedButton(
+                  color: Colors.blue,
+                  textColor: Colors.white,
+                  onPressed: _showWelcomeScreen, // UPDATED
+                  child: Text('Enter new truck',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                height: 70,
+                width: 270,
+              )
             ],
           ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Enter new Truck',
-                style: Theme.of(context).textTheme.headline4),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: _usernameTextController,
-              decoration: InputDecoration(hintText: 'Name'),
-            ),
-          ),
-          FlatButton(
-            color: Colors.blue,
-            textColor: Colors.white,
-            onPressed:
-                _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
-            child: Text('Check-In'),
-          ),
-        ],
-      ),
-    );
+        )));
   }
 }
 
@@ -240,8 +267,11 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
     setState(() {
       text = text + csv;
       _truckIdTextController.text = text;
-      code = '<ol> <li>Truck ID:' + _truckIdTextController.value.text +
-        ' </li> <li>Parking ID:' + _parkingIdTextController.value.text + ' </li> </ol>';
+      code = '<ol> <li>Truck ID:' +
+          _truckIdTextController.value.text +
+          ' </li> <li>Parking ID:' +
+          _parkingIdTextController.value.text +
+          ' </li> </ol>';
     });
   }
 
@@ -267,15 +297,15 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
                 : Container(),
             SizedBox(height: 10.0),
             RaisedButton(
-              child: Text('Open Camera'),
+              child: Text('Open Camera',style: TextStyle(fontSize: 20)),
               onPressed: pickImage,
             ),
             SizedBox(height: 10.0),
             RaisedButton(
-              child: Text('Read Truck ID'),
+              child: Text('Read Truck ID',style: TextStyle(fontSize: 20)),
               onPressed: readText,
             ),
-            Text(text),
+            //Text(text),
             TextFormField(
               controller: _truckIdTextController,
               decoration: InputDecoration(hintText: 'TRUCK-ID-0001'),
@@ -286,7 +316,9 @@ class _MyPhotoPageOneState extends State<MyPhotoPageOne> {
               onPressed: () {
                 Navigator.of(context).pushNamed('/fotopagetwo');
               },
-              child: Text('Continue'),
+              child: Text('Continue',
+                    style: TextStyle(fontSize: 20),
+              ),
             ),
           ],
         ));
@@ -337,8 +369,11 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
     setState(() {
       text = text + csv;
       _parkingIdTextController..text = text;
-      code = '<ol> <li>Truck ID:' + _truckIdTextController.value.text +
-        ' </li> <li>Parking ID:' + _parkingIdTextController.value.text + ' </li> </ol>';
+      code = '<ol> <li>Truck ID:' +
+          _truckIdTextController.value.text +
+          ' </li> <li>Parking ID:' +
+          _parkingIdTextController.value.text +
+          ' </li> </ol>';
     });
   }
 
@@ -364,15 +399,15 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
                 : Container(),
             SizedBox(height: 10.0),
             RaisedButton(
-              child: Text('Open Camera'),
+              child: Text('Open Camera',style: TextStyle(fontSize: 20)),
               onPressed: pickImage,
             ),
             SizedBox(height: 10.0),
             RaisedButton(
-              child: Text('Read Parking ID'),
+              child: Text('Read Parking ID',style: TextStyle(fontSize: 20)),
               onPressed: readText,
             ),
-            Text(text),
+            //Text(text),
             TextFormField(
               controller: _parkingIdTextController,
               decoration: InputDecoration(hintText: 'PARKING-ID-0001'),
@@ -383,7 +418,9 @@ class _MyPhotoPageStateTwo extends State<MyPhotoPageTwo> {
               onPressed: () {
                 Navigator.of(context).pushNamed('/iframe');
               },
-              child: Text('Continue'),
+              child: Text('Continue',
+                    style: TextStyle(fontSize: 20),
+              ),
             ),
           ],
         ));
